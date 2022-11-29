@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 const bodyParser = require('body-parser');
+const path = require('path');
 const cors = require('cors');
 const io = require('socket.io')(server, {
   pingTimeout: 25000,
@@ -14,10 +15,18 @@ const {userJoin, getCurrentUser, userLeave, getRoomUsers} =  require('./utils/us
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use(express.static(path.resolve(__dirname, './build')));
+// All other GET requests not handled before will return our React app
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './build', 'index.html'));
+});
+
 
 app.get("/", (req, res) => {
   res.send({ response: "chat server" }).status(200);
 });
+
+
 
 io.on('connection', socket => {
   
