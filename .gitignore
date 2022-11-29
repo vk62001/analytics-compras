@@ -1,0 +1,8 @@
+node_modules/
+.idea/
+.env
+/src/siteConf.js
+build/
+package-lock.json
+.DS_Store/
+**/.DS_Store
