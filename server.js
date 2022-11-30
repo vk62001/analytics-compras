@@ -33,19 +33,9 @@ io.on('connection', socket => {
   socket.on('joinRoom', userRemote => {
     userRemote.id = socket.id;
     const user = userJoin(userRemote);
-    console.log(userRemote.user.username, '24')
     if(user){
       if(user.room)socket.join(user.room);
     }
-    //Welcome current user
-    // socket.emit('message', formatMessage(botName,'Welcome to chat streaming'), false);
-    //Broadcast when a user connects
-    // socket.broadcast
-    // .to(user.room)
-    // .emit('message', formatMessage(user.username,' has joined'), true);
-
-    // send users and room infoSse
-    console.log(user.room);
     io.to(user.room)
     .emit('roomUsers',{
       room: user.room,
@@ -53,6 +43,16 @@ io.on('connection', socket => {
     });
     
   });
+
+    socket.on('status', e=>{
+      let user = getCurrentUser(socket.id);
+      user.status = e.status;
+      io.to(user.room)
+          .emit('roomUsers',{
+            room: user.room,
+            users: getRoomUsers(user.room)
+          });
+    })
 
 //   // //listen for chatMessage
 //   // socket.on('chatMessage', msg=>{
